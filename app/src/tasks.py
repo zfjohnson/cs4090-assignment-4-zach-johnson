@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 # File path for task storage
-DEFAULT_TASKS_FILE = "tasks.json"
+DEFAULT_TASKS_FILE = "app/data/tasks.json"
 
 def load_tasks(file_path=DEFAULT_TASKS_FILE):
     """
@@ -120,7 +120,7 @@ def get_overdue_tasks(tasks):
     today = datetime.now().strftime("%Y-%m-%d")
     return [
         task for task in tasks 
-        if not task.get("completed") and task.get("due_date", "") < today
+        if not task.get("completed", False) and task.get("due_date", "") < today
     ]
 
 def sort_tasks(tasks, sort_by):

@@ -7,10 +7,9 @@ import subprocess
 # Additions/Bug-fixes marked with "New -"
 
 def main():
-
-
-    # New - Button to run tests
-    test_button = st.button("Run tests")
+    TEST_PATH = "app/tests/test_advanced.py"
+    TEST_FUNCTION = "test_filter_by_priority"
+    test_button = st.button("Run all tests")
     if test_button:
         running_text = st.text("Running tests...")
         result = subprocess.run(
@@ -20,11 +19,82 @@ def main():
         )
         st.text_area("Test Results", result.stdout + result.stderr, height=300)
         running_text.text("Tests completed!")
+    if st.button("Run unit tests"):
+        running_text = st.text("Running unit tests...")
+        result = subprocess.run(
+            ["pytest", "app/tests/unit_tests/test_tasks.py", "--tb=short"],
+            capture_output=True,
+            text=True
+        )
+        st.text_area("Unit Test Results", result.stdout + result.stderr, height=300)
+        running_text.text("Unit tests completed!")
+    if st.button("Run Parameterized Test"):
+        running_text = st.text("Running parameterized test...")
+        result = subprocess.run(
+            ["pytest", f"{TEST_PATH}::{TEST_FUNCTION}", "--tb=short"],
+            capture_output=True,
+            text=True
+        )
+        st.text_area("Test Results", result.stdout + result.stderr, height=300)
+        running_text.text("Test completed!")
+    # New - Button to run tests
+    
+    
+    # Buttons to run specific tests in test_tasks.py
+    if st.button("Run Test: Filter by Priority"):
+        result = subprocess.run(
+            ["pytest", "app/tests/test_tasks.py::test_filter_tasks_by_priority"],
+            capture_output=True,
+            text=True
+        )
+        st.text_area("Test Results (Filter by Priority)", result.stdout + result.stderr, height=300)
+
+    if st.button("Run Test: Filter by Category"):
+        result = subprocess.run(
+            ["pytest", "app/tests/test_tasks.py::test_filter_tasks_by_category"],
+            capture_output=True,
+            text=True
+        )
+        st.text_area("Test Results (Filter by Category)", result.stdout + result.stderr, height=300)
+
+    if st.button("Run Test: Filter by Completion"):
+        result = subprocess.run(
+            ["pytest", "app/tests/test_tasks.py::test_filter_tasks_by_completion"],
+            capture_output=True,
+            text=True
+        )
+        st.text_area("Test Results (Filter by Completion)", result.stdout + result.stderr, height=300)
+
+    if st.button("Run Test: Search Tasks"):
+        result = subprocess.run(
+            ["pytest", "app/tests/test_tasks.py::test_search_tasks"],
+            capture_output=True,
+            text=True
+        )
+        st.text_area("Test Results (Search Tasks)", result.stdout + result.stderr, height=300)
+
+    if st.button("Run Test: Get Overdue Tasks"):
+        result = subprocess.run(
+            ["pytest", "app/tests/test_tasks.py::test_get_overdue_tasks"],
+            capture_output=True,
+            text=True
+        )
+        st.text_area("Test Results (Get Overdue Tasks)", result.stdout + result.stderr, height=300)
+
+
+    # New - Button to run BDD tests
+    bdd_button = st.button("BDD Tests")
+    if bdd_button:
+        result = subprocess.run(
+            ["pytest", "app/tests/feature/steps/test_bdd_steps.py"],
+            capture_output=True,
+            text=True
+        )
+        st.text_area("BDD Test Results", result.stdout + result.stderr, height=300)
+        st.text("BDD tests completed!")
+
     
     st.title("To-Do Application")
-
-    bdd_button = st.button("BDD Tests")
-
 
     # Load existing tasks
     tasks = load_tasks()
